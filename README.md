@@ -50,4 +50,4 @@ let ui = slint.loadFile("main.slint", {
 });
 // Enjoy it.
 ```
-
+3. Enable SLINT_ENABLE_EXPERIMENTAL_FEATURES in environment vars.
