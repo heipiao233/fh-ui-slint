@@ -1,0 +1,72 @@
+import { DefaultPalette, GlassPalette, DarkPalette, FHPalette, FHColor } from "styling.slint";
+import { Corner } from "corner.slint";
+
+export component FHInteract {
+    in property <bool> has-background: true;
+    in property <bool> has-border: true;
+    in property <bool> has-corner: true;
+    in property <FHColor> color: FHPalette.general;
+
+    in property <bool> hovered;
+    in property <bool> focused;
+    in property <bool> pressing;
+    in property <bool> enabled: true;
+    // property <brush> background;
+    property <brush> fg;
+    property <brush> fg-outer;
+    out property <brush> foreground: focused ? fg.brighter(0.05) : fg; // Final value with focused effect
+    out property <brush> foreground-outer: focused ? fg-outer.brighter(0.05) : fg-outer; // Final value with focused effect
+    property <brush> bg-original: has-background ? color.dark : transparent;
+    property <brush> bg: has-background ? color.dark : transparent;
+    property <brush> border-color;
+    property <brush> border-color-final: focused ? border-color.brighter(0.05) : border-color;
+    states [
+        pressing when root.pressing: {
+            bg: has-background ? bg-original.darker(0.15) : color.glass.darker(0.15);
+            border-color: has-background ? bg-original.darker(0.15) : color.dark.darker(0.15);
+            fg-outer: FHPalette.foreground.darker(0.15);
+            fg: has-background ? Colors.white.darker(0.15) : color.dark.darker(0.15);
+            out {
+                animate bg, border-color, fg { duration: 50ms; }
+            }
+        }
+
+        hovered when root.hovered: {
+            bg: has-background ? bg-original.brighter(0.15) : color.glass;
+            border-color: color.dark.brighter(0.15);
+            fg-outer: FHPalette.foreground.brighter(0.15);
+            fg: has-background ? Colors.white.darker(0.15) : color.dark.brighter(0.15);
+            out {
+                animate bg, border-color, fg { duration: 50ms; }
+            }
+        }
+
+        unhovered when !root.hovered: {
+            bg: bg-original;
+            border-color: color.dark;
+            fg-outer: FHPalette.foreground;
+            fg: has-background ? Colors.white.darker(0.15) : color.dark;
+            out {
+                animate bg, border-color, fg { duration: 50ms; }
+            }
+        }
+    ]
+
+    opacity: enabled ? 1 : 0.35;
+
+    back := Rectangle {
+        height: root.height;
+        width: root.width;
+        border-width: has-border ? 1px : 0px;
+        border-color: border-color-final;
+        background: focused ? bg.brighter(0.05) : bg;
+    }
+
+    if (has-corner): Corner {
+        x: root.width - 4px;
+        y: root.height / 2 - back.height / 2 + 4px;
+        fill: has-background ? FHPalette.corner : border-color-final;
+    }
+
+    @children
+}

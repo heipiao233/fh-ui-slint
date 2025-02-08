@@ -1,0 +1,131 @@
+export global DefaultPalette {
+    out property <color> general: rgb(64, 173, 235);
+    out property <color> safe: rgb(69, 204, 56);
+    out property <color> warn: rgb(230, 189, 53);
+    out property <color> danger: rgb(230, 82, 89);
+    out property <color> special: rgb(171, 82, 203);
+}
+
+export global DarkPalette {
+    out property <color> general: rgb(40, 144, 204);
+    out property <color> safe: rgb(57, 163, 46);
+    out property <color> warn: rgb(194, 161, 52);
+    out property <color> danger: rgb(204, 61, 68);
+    out property <color> special: rgb(147, 61, 178);
+}
+
+export global GlassPalette {
+    out property <color> general: rgba(45, 147, 206, 0.12);
+    out property <color> safe: rgba(69, 204, 56, 0.12);
+    out property <color> warn: rgba(230, 189, 53, 0.12);
+    out property <color> danger: rgba(230, 82, 89, 0.12);
+    out property <color> special: rgba(147, 61, 178, 0.12);
+}
+
+export struct FHColor {
+    default: color,
+    dark: color,
+    glass: color,
+}
+
+export global FHPalette {
+    out property <FHColor> general: {
+        default: DefaultPalette.general,
+        dark: DarkPalette.general,
+        glass: GlassPalette.general
+    };
+    out property <FHColor> safe: {
+        default: DefaultPalette.safe,
+        dark: DarkPalette.safe,
+        glass: GlassPalette.safe
+    };
+    out property <FHColor> warn: {
+        default: DefaultPalette.warn,
+        dark: DarkPalette.warn,
+        glass: GlassPalette.warn
+    };
+    out property <FHColor> danger: {
+        default: DefaultPalette.danger,
+        dark: DarkPalette.danger,
+        glass: GlassPalette.danger
+    };
+    out property <FHColor> special: {
+        default: DefaultPalette.special,
+        dark: DarkPalette.special,
+        glass: GlassPalette.special
+    };
+
+
+    in-out property <ColorScheme> color-scheme: SlintInternal.color-scheme != ColorScheme.unknown ? SlintInternal.color-scheme : light;
+    private property <bool> dark: color-scheme == ColorScheme.dark;
+
+    out property <brush> background: dark ? #1E2129 : #FAFAFA;
+    out property <brush> foreground: dark ? #9C9EA6 : #606266;
+    out property <brush> alternate-background: dark ? #333740 : #FFFFFF;
+    out property <brush> alternate-foreground: foreground;
+    out property <brush> control-background: FHPalette.general.dark;
+    out property <brush> control-foreground: white;
+    out property <brush> accent-background: FHPalette.general.dark;
+    out property <brush> accent-foreground: dark ? #BEC1C6 : #303133;
+    out property <brush> selection-foreground: #ECEFF4;
+    out property <brush> selection-background: #5E81AC;
+    out property <brush> border: dark ? #666666 : #AAAAAA;
+
+    out property <brush> state: dark ? #FFFFFF : #000000;
+    out property <brush> state-secondary: dark ? #000000 : #FFFFFF;
+    out property <brush> placeholder-foreground: dark ? #5B5E66 : #ABABB2;
+    out property <brush> disabled-foreground: foreground.darker(0.5);
+    out property <brush> secondary-foreground: dark ? #747780 : #909399;
+    out property <brush> corner: dark ? rgba(30, 33, 41, 0.5) : rgba(255, 255, 255, 0.5);
+}
+
+export struct TextStyle {
+    font-size: relative-font-size,
+    font-weight: int,
+}
+
+export global FHFontSettings {
+    out property <int> light-font-weight: 300;
+    out property <int> regular-font-weight: 400;
+    out property <int> semibold-font-weight: 600;
+
+    out property <TextStyle> body: {
+        font-size: 1.375rem,
+        font-weight: regular-font-weight
+    };
+
+
+    out property <TextStyle> title: {
+        font-size: 2.75rem,
+        font-weight: light-font-weight
+    };
+
+    // needed?
+    out property <TextStyle> body-strong: {
+        font-size: 1.4rem,
+        font-weight: semibold-font-weight
+    };
+}
+
+export global FHSizeSettings {
+    out property <length> component-height: 36px;
+    out property <length> icon-size-small: 20px;
+}
+
+export global Icons {
+    out property <image> arrow-down: @image-url("_arrow-down.svg");
+    out property <image> arrow-up: @image-url("_arrow-up.svg");
+    out property <image> down: @image-url("_down.svg");
+    out property <image> dropdown: @image-url("_dropdown.svg");
+    out property <image> up: @image-url("_up.svg");
+    out property <image> keyboard: @image-url("_keyboard.svg");
+    out property <image> clock: @image-url("_clock.svg");
+    out property <image> arrow-back: @image-url("_arrow_back.svg");
+    out property <image> arrow-forward: @image-url("_arrow_forward.svg");
+    out property <image> edit: @image-url("_edit.svg");
+    out property <image> calendar: @image-url("_calendar.svg");
+    out property <image> combo: @image-url("_combo.svg");
+    out property <image> switch-off: @image-url("_switch-off.svg");
+    out property <image> switch-on: @image-url("_switch-on.svg");
+    out property <image> selected: @image-url("_selected.svg");
+}

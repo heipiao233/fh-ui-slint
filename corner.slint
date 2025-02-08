@@ -1,0 +1,10 @@
+import { FHPalette } from "styling.slint";
+export component Corner {
+    in property <brush> fill <=> inner.fill;
+    inner := Path {
+        width: 8px;
+        height: 8px;
+        commands: "M 0 0 L 100 100 L 100 0 Z";
+        fill: FHPalette.corner;
+    }
+}

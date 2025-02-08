@@ -1,0 +1,107 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
+
+import { VerticalBox } from "builtin:/common/layout.slint";
+import { Button, StandardButton} from "./button.slint";
+import { FHPalette, FHFontSettings, Icons } from "styling.slint";
+
+import { Date, DatePickerBase } from "builtin:/common/datepicker_base.slint";
+import { FHInteract } from "interactive.slint";
+export { Date }
+
+export component DatePickerPopup inherits PopupWindow {
+    in property <string> title: "Select date";
+    in property <Date> date <=> base.date;
+
+    callback canceled();
+    callback accepted(date: Date);
+
+    width: 360px;
+    height: 524px;
+    close-policy: PopupClosePolicy.no-auto-close;
+
+    background-layer := Rectangle {
+        width: dialog.width;
+        height: dialog.height;
+        FHInteract {
+            width: dialog.width;
+            height: dialog.height;
+            has-background: false;
+        }
+        background: FHPalette.background;
+    }
+
+    dialog := Dialog {
+        padding: 8px;
+
+        base := DatePickerBase {
+            title: root.title;
+            style: {
+                border-brush: FHPalette.border,
+                vertical-spacing: 8px,
+                horizontal-spacing: 4px,
+                calendar-style: {
+                    spacing: 8px,
+                    delegate-style: {
+                        font-size: FHFontSettings.body-strong.font-size,
+                        font-weight: FHFontSettings.body-strong.font-weight,
+                        foreground: FHPalette.foreground,
+                        state-brush: FHPalette.state,
+                        background-selected: FHPalette.general.dark,
+                        foreground-selected: FHPalette.foreground,
+                        state-brush-selected: FHPalette.state-secondary,
+                        border-color-today: FHPalette.general.dark,
+                        foreground-today: FHPalette.foreground,
+                        state-brush-today: FHPalette.state,
+                    }
+                },
+                icon-button-style: {
+                    foreground: FHPalette.foreground,
+                    state-brush: FHPalette.state,
+                    icon-size: 12px,
+                },
+                current-day-style: {
+                    font-size: FHFontSettings.title.font-size,
+                    font-weight: FHFontSettings.title.font-weight,
+                    foreground: FHPalette.foreground,
+                },
+                title-style: {
+                    font-size: FHFontSettings.body.font-size,
+                    font-weight: FHFontSettings.body.font-weight,
+                    foreground: FHPalette.foreground,
+                },
+                previous-icon: Icons.arrow-back,
+                next-icon: Icons.arrow-forward,
+                drop-down-icon: Icons.dropdown,
+                input-icon: Icons.edit,
+                calendar-icon: Icons.calendar,
+                selection-button-style: {
+                    foreground: FHPalette.foreground,
+                    state-brush: FHPalette.state,
+                    icon-size: 8px,
+                    font-size: FHFontSettings.body.font-size,
+                    font-weight: FHFontSettings.body.font-weight
+                }
+            };
+        }
+
+        StandardButton {
+            kind: cancel;
+
+            clicked => {
+                root.close();
+                root.canceled();
+            }
+        }
+
+        StandardButton {
+            enabled: base.ok-enabled();
+            kind: ok;
+
+            clicked => {
+                root.close();
+                root.accepted(base.get-current-date());
+            }
+        }
+    }
+}

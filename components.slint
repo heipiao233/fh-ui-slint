@@ -1,0 +1,71 @@
+import { FHSizeSettings, FHFontSettings, FHPalette } from "styling.slint";
+import { Button } from "button.slint";
+import { FHInteract } from "interactive.slint";
+import { Corner } from "corner.slint";
+
+export component ListItem {
+    in property <bool> is-selected;
+    in property <StandardListViewItem> item;
+    in property <bool> has-focus;
+    in property <bool> has-hover;
+    in property <bool> pressed;
+    in property <int> index;
+    in property <length> pressed-x;
+    in property <length> pressed-y;
+
+    min-height: FHSizeSettings.component-height;
+    vertical-stretch: 0;
+    horizontal-stretch: 1;
+    accessible-role: list-item;
+    accessible-label: root.item.text;
+    accessible-item-selectable: true;
+    accessible-item-selected: root.is-selected;
+    accessible-item-index: root.index;
+
+    states [
+        selected when is-selected: {
+            back.background: FHPalette.general.dark;
+            text.color: white;
+            in {
+                animate back.background {
+                    duration: 50ms;
+                }
+            }
+            out {
+                animate back.background {
+                    duration: 50ms;
+                }
+            }
+        }
+
+        hovered when has-focus || has-hover: {
+            back.background: FHPalette.general.glass;
+        }
+    ]
+
+    back := Rectangle {
+        height: root.height;
+        width: root.width;
+        // background: FHPalette.general.dark;
+    }
+
+    Corner {
+        x: root.width - 4px;
+        y: 4px;
+    }
+
+    VerticalLayout {
+        padding-left: 16px;
+        padding-right: 16px;
+        text := Text {
+            text: item.text;
+            color: FHPalette.foreground;
+            font-size: FHFontSettings.body.font-size;
+            font-weight: FHFontSettings.body.font-weight;
+            vertical-alignment: center;
+            horizontal-alignment: left;
+        }
+    }
+
+    @children
+}

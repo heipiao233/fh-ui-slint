@@ -1,0 +1,33 @@
+export { Button } from "button.slint";
+export { ScrollView } from "scrollview.slint";
+export { ListItem } from "components.slint";
+export { LineEdit } from "lineedit.slint";
+import { FHPalette } from "styling.slint";
+
+export global StyleMetrics {
+    out property <length> layout-spacing: 10px;
+    out property <length> layout-padding: 12px;
+    out property <length> text-cursor-width: 1px;
+    out property <color> window-background: FHPalette.background;
+    out property <color> default-text-color: FHPalette.foreground;
+    out property <color> textedit-background: FHPalette.alternate-background;
+    out property <color> textedit-text-color: FHPalette.foreground;
+    out property <color> textedit-background-disabled: FHPalette.alternate-background;
+    out property <color> textedit-text-color-disabled: FHPalette.foreground;
+    out property <bool> dark-color-scheme: Palette.color-scheme == ColorScheme.dark;
+}
+
+export global Palette {
+    out property <brush> background: FHPalette.background;
+    out property <brush> foreground: FHPalette.foreground;
+    out property <brush> alternate-background: FHPalette.alternate-background;
+    out property <brush> alternate-foreground: FHPalette.foreground;
+    out property <brush> control-background: FHPalette.general.dark;
+    out property <brush> control-foreground: white;
+    out property <brush> accent-background: FHPalette.general.dark;
+    out property <brush> accent-foreground: white;
+    out property <brush> selection-background: FHPalette.selection-background;
+    out property <brush> selection-foreground: FHPalette.selection-foreground;
+    out property <brush> border: FHPalette.border;
+    in-out property <ColorScheme> color-scheme <=> FHPalette.color-scheme;
+}

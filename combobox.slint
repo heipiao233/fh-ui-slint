@@ -1,0 +1,172 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
+
+import { FHFontSettings, FHPalette, FHSizeSettings, Icons } from "styling.slint";
+import { ComboBoxBase } from "builtin:/common/combobox-base.slint";
+import { ScrollView } from "scrollview.slint";
+import { Corner } from "corner.slint";
+
+export component ComboBox {
+    in property <[string]> model <=> base.model;
+    in property <bool> enabled <=> base.enabled;
+    out property <bool> has-focus <=> base.has-focus;
+    in-out property <int> current-index <=> base.current-index;
+    in-out property <string> current-value <=> base.current-value;
+
+    callback selected <=> base.selected;
+
+    property <length> popup-padding: 4px;
+    property <int> visible-items: min(6, model.length);
+
+    min-width: max(160px, layout.min-height);
+    min-height: FHSizeSettings.component-height;
+    horizontal-stretch: 1;
+    vertical-stretch: 0;
+    forward-focus: base;
+    accessible-role: combobox;
+    accessible-enabled: root.enabled;
+
+    states [
+        disabled when !root.enabled : {
+            opacity: 0.35;
+        }
+
+        open when has-focus: {
+            underline.background: FHPalette.general.dark;
+            in {
+                animate underline.background { duration: 50ms; }
+            }
+            out {
+                animate underline.background { duration: 50ms; }
+            }
+        }
+    ]
+
+    base := ComboBoxBase {
+        width: 100%;
+        height: 100%;
+
+        show-popup => {
+            popup.show();
+        }
+        close-popup => {
+            popup.close();
+        }
+    }
+
+    background := Rectangle {
+        background: FHPalette.alternate-background;
+
+        layout := HorizontalLayout {
+            padding-left: 8px;
+            padding-right: 8px;
+            spacing: 10px;
+
+            text := Text {
+                horizontal-alignment: left;
+                vertical-alignment: center;
+                font-size: FHFontSettings.body.font-size;
+                font-weight: FHFontSettings.body.font-weight;
+                color: FHPalette.foreground;
+                text: root.current-value;
+            }
+
+            Image {
+                source: Icons.combo;
+                width: 24px;
+                height: 24px;
+                colorize: FHPalette.foreground;
+                y: (parent.height - self.height) / 2;
+            }
+        }
+
+        underline := Rectangle {
+            y: root.height - 1px;
+            width: root.width;
+            height: 1px;
+            background: FHPalette.border;
+        }
+    }
+
+    popup := PopupWindow {
+        y: root.height;
+        width: root.width + 12px;
+        height: root.visible-items * FHSizeSettings.component-height + 2 * root.popup-padding;
+        ScrollView {
+            VerticalLayout {
+                for value[index] in root.model : Rectangle {
+                    background: FHPalette.alternate-background;
+                    states [
+                        hovered when touch-area.has-hover: {
+                            transparent-layer.background: FHPalette.general.glass;
+                            in {
+                                animate transparent-layer.background {
+                                    duration: 50ms;
+                                }
+                            }
+                            out {
+                                animate transparent-layer.background {
+                                    duration: 50ms;
+                                }
+                            }
+                        }
+                    ]
+                    transparent-layer := Rectangle {
+                        width: parent.width;
+                        height: parent.height;
+                    }
+                    height: FHSizeSettings.component-height;
+                    touch-area := TouchArea {
+                        clicked => {
+                            base.select(index);
+                        }
+                    }
+                    HorizontalLayout {
+                        padding-left: root.current-index != index
+                            ? 29.6px
+                            : 5.6px;
+                        padding-right: 8px;
+                        if root.current-index == index: HorizontalLayout {
+                            padding-top: (parent.height - child.height) / 2;
+                            child := Image {
+                                source: Icons.selected;
+                                width: 24px;
+                                height: 24px;
+                                colorize: FHPalette.general.dark;
+                            }
+                        }
+                        Rectangle {
+                            width: 8px;
+                        }
+                        Text {
+                            text: value;
+                            color: FHPalette.foreground;
+                            font-size: FHFontSettings.body.font-size;
+                            font-weight: FHFontSettings.body.font-weight;
+                            horizontal-alignment: left;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
+        }
+        Corner {
+            x: background.width - self.width - 4px;
+            y: 3px;
+            fill: FHPalette.general.dark;
+        }
+
+        FocusScope {
+            init => {
+                self.focus();
+                base.popup-has-focus = true;
+            }
+            changed has-focus => {
+                base.popup-has-focus = self.has-focus;
+            }
+            key-pressed(event) => {
+                return base.popup-key-handler(event);
+            }
+        }
+    }
+}

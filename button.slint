@@ -1,0 +1,143 @@
+import { FHInteract } from "interactive.slint";
+import { FHPalette, FHSizeSettings, FHFontSettings, FHColor, FHPalette } from "styling.slint";
+export component Button {
+    in property <string> text;
+    in property <image> icon;
+    in property <bool> primary: false;
+    in property <bool> enabled <=> i-touch-area.enabled;
+    in property <bool> checkable;
+    in property <bool> colorize-icon;
+    out property <bool> has-focus: i-focus-scope.has-focus;
+    out property <bool> pressed: self.enabled && i-touch-area.pressed;
+    in-out property <bool> checked;
+
+    callback clicked;
+
+    in property <FHColor> color: FHPalette.general; // FH specific
+    accessible-role: button;
+    accessible-enabled: root.enabled;
+    accessible-checkable: root.checkable;
+    accessible-checked: root.checked;
+    accessible-label: root.text;
+    accessible-action-default => { i-touch-area.clicked(); }
+    forward-focus: i-focus-scope;
+    min-width: layout.min-width;
+    height: FHSizeSettings.component-height;
+
+    interact := FHInteract {
+        height: root.height;
+        width: root.width;
+        has-corner: true;
+        has-background: primary;
+        has-border: true;
+        color: root.color;
+        hovered: i-touch-area.has-hover || i-focus-scope.has-focus;
+        enabled: root.enabled;
+
+        pressing <=> pressed;
+
+        states [
+            checked when checkable && checked: {
+                has-background: true;
+                has-border: false;
+            }
+    
+            unchecked when checkable && !checked: {
+                has-background: false;
+                has-border: true;
+            }
+        ]
+    }
+
+    i-touch-area := TouchArea {
+        clicked => {
+            if (root.checkable) {
+                root.checked = !root.checked;
+            }
+            root.clicked();
+        }
+    }
+
+    i-focus-scope := FocusScope {
+        x: 0;
+        width: 0;
+        enabled <=> root.enabled;
+
+        key-pressed(event) => {
+            if (event.text == " " || event.text == "\n") {
+                i-touch-area.clicked();
+                 return accept;
+            }
+
+            return reject;
+        }
+    }
+
+    layout := HorizontalLayout {
+        alignment: center;
+        padding-left: 9px;
+        padding-right: 9px;
+        spacing: 4.9px;
+        if (root.icon.width > 0 && root.icon.height > 0) : Image {
+            min-width: self.preferred-width;
+            preferred-width: FHSizeSettings.icon-size-small;
+            preferred-height: FHSizeSettings.icon-size-small;
+            vertical-alignment: center;
+            source: icon;
+            colorize: colorize-icon ? interact.foreground : transparent;
+        }
+    
+        if root.text != "": Text {
+            text: text;
+            color: interact.foreground;
+            font-size: FHFontSettings.body.font-size;
+            font-weight: FHFontSettings.body.font-weight;
+            vertical-alignment: center;
+        }
+    }
+
+}
+
+export component StandardButton {
+    in property <StandardButtonKind> kind;
+    in property <bool> enabled <=> btn.enabled;
+    out property <bool> has-focus <=> btn.has-focus;
+    out property <bool> pressed <=> btn.pressed;
+    forward-focus: btn;
+
+    callback clicked <=> btn.clicked;
+
+    height <=> btn.height;
+
+    btn := Button {
+        primary: root.kind == StandardButtonKind.ok
+              || root.kind == StandardButtonKind.apply
+              || root.kind == StandardButtonKind.yes;
+        text:
+            root.kind == StandardButtonKind.ok ? "OK" :
+            root.kind == StandardButtonKind.cancel ? "Cancel" :
+            root.kind == StandardButtonKind.apply ? "Apply" :
+            root.kind == StandardButtonKind.close ? "Close" :
+            root.kind == StandardButtonKind.reset ? "Reset" :
+            root.kind == StandardButtonKind.help ? "Help" :
+            root.kind == StandardButtonKind.yes ? "Yes" :
+            root.kind == StandardButtonKind.no ? "No" :
+            root.kind == StandardButtonKind.abort ? "Abort" :
+            root.kind == StandardButtonKind.retry ? "Retry" :
+            root.kind == StandardButtonKind.ignore ? "Ignore" : "";
+        color:
+            root.kind == StandardButtonKind.ok ? FHPalette.general :
+            root.kind == StandardButtonKind.cancel ? FHPalette.danger :
+            root.kind == StandardButtonKind.apply ? FHPalette.general :
+            root.kind == StandardButtonKind.close ? FHPalette.danger :
+            root.kind == StandardButtonKind.reset ? FHPalette.danger :
+            root.kind == StandardButtonKind.help ? FHPalette.special :
+            root.kind == StandardButtonKind.yes ? FHPalette.safe :
+            root.kind == StandardButtonKind.no ? FHPalette.danger :
+            root.kind == StandardButtonKind.abort ? FHPalette.danger :
+            root.kind == StandardButtonKind.retry ? FHPalette.general :
+            root.kind == StandardButtonKind.ignore ? FHPalette.warn : FHPalette.general;
+        width: root.width;
+    }
+}
+

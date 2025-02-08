@@ -1,0 +1,114 @@
+import { FHPalette } from "styling.slint";
+import { SpinnerBase } from "builtin:/common/spinner-base.slint";
+
+component SpinnerBlock inherits Path {
+    property <angle> rotation: 0deg;
+    property <length> center-x;
+    property <length> center-y;
+    in property <int> state;
+    in property <length> parent-side;
+    animate center-x, center-y, rotation {
+        duration: 0.5s;
+        easing: ease;
+    }
+    states [
+        left-top when state == 0: {
+            center-x: 0.25 * parent-side;
+            center-y: 0.25 * parent-side;
+            rotation: 0;
+        }
+        right-top when state == 2: {
+            center-x: 0.75 * parent-side;
+            center-y: 0.25 * parent-side;
+            rotation: 0;
+        }
+        right-down when state == 4: {
+            center-x: 0.75 * parent-side;
+            center-y: 0.75 * parent-side;
+            rotation: 0;
+        }
+        left-down when state == 6: {
+            center-x: 0.25 * parent-side;
+            center-y: 0.75 * parent-side;
+            rotation: 0;
+        }
+        center when Math.mod(state, 2) == 1: {
+            center-x: 0.5 * parent-side;
+            center-y: 0.5 * parent-side;
+            rotation: 45deg;
+        }
+    ]
+    width: (cos(rotation) + sin(rotation)) * parent-side / 2;
+    height: self.width;
+    x: center-x - self.width / 2;
+    y: center-y - self.height / 2;
+    fill: FHPalette.general.dark;
+    opacity: 0.75;
+    MoveTo {
+        x: sin(rotation) / (cos(rotation) + sin(rotation));
+        y: 0;
+    }
+    LineTo {
+        x: 1;
+        y: sin(rotation) / (cos(rotation) + sin(rotation));
+    }
+    LineTo {
+        x: cos(rotation) / (cos(rotation) + sin(rotation));
+        y: 1;
+    }
+    LineTo {
+        x: 0;
+        y: cos(rotation) / (cos(rotation) + sin(rotation));
+    }
+}
+
+export component Spinner {
+    in property <float> progress;
+    in property <bool> indeterminate;
+
+    min-width: 30px;
+    min-height: 30px;
+    horizontal-stretch: 0;
+    vertical-stretch: 0;
+    accessible-role: progress-indicator;
+    accessible-value: !root.indeterminate ? root.progress : "";
+    accessible-value-minimum: 0.0;
+    accessible-value-maximum: 1.0;
+
+    if (!indeterminate): SpinnerBase {
+        width: 100%;
+        height: 100%;
+        stroke-width: 3px;
+        stroke: FHPalette.general.dark;
+        progress: root.progress;
+    }
+
+    if (indeterminate): Rectangle {
+        width: min(parent.width, parent.height);
+        height: min(parent.width, parent.height);
+
+        timer := Timer {
+            interval: 0.5s;
+            running: true;
+            triggered() => {
+                d1.state += 1;
+                d2.state += 1;
+                if (d1.state == 8) {
+                    d1.state = 0;
+                }
+                if (d2.state == 8) {
+                    d2.state = 0;
+                }
+            }
+        }
+        d1 := SpinnerBlock {
+            state: 0;
+            parent-side: parent.width;
+        }
+
+        d2 := SpinnerBlock {
+            state: 4;
+            parent-side: parent.width;
+        }
+    }
+}

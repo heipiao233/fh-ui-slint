@@ -1,0 +1,39 @@
+import { Button } from "button.slint";
+import { Icons, FHSizeSettings } from "styling.slint";
+
+export component Switch {
+    in property <bool> enabled: true;
+    in property <string> text;
+    in-out property <bool> checked;
+    out property <bool> has-focus: btn.has-focus;
+
+    callback toggled;
+    vertical-stretch: 0;
+    horizontal-stretch: 0;
+    accessible-enabled: root.enabled;
+    accessible-label: root.text;
+    accessible-checkable: true;
+    accessible-checked <=> root.checked;
+    accessible-role: switch;
+    accessible-action-default => {
+        root.checked = !root.checked;
+        root.toggled();
+    }
+    forward-focus: btn;
+    opacity: enabled ? 1 : 0.5;
+    height: FHSizeSettings.component-height;
+
+    btn := Button {
+        enabled: root.enabled;
+        text: root.text;
+        checkable: true;
+        checked <=> root.checked;
+        height: root.height;
+        width: root.width;
+        icon: checked ? Icons.switch-on : Icons.switch-off;
+        colorize-icon: true;
+        clicked => {
+            toggled();
+        }
+    }
+}

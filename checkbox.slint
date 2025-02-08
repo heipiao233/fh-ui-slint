@@ -1,0 +1,74 @@
+import { FHPalette, FHColor, FHFontSettings, FHSizeSettings } from "styling.slint";
+import { FHInteract } from "interactive.slint";
+export component CheckBox {
+    in property <string> text: "test";
+    in property <bool> enabled <=> i-touch-area.enabled;
+    out property <bool> has-focus: i-focus-scope.has-focus;
+    in-out property <bool> checked;
+
+    callback toggled;
+
+    in property <FHColor> color: FHPalette.general; // FH specific
+    accessible-enabled: root.enabled;
+    accessible-checkable: true;
+    accessible-label: root.text;
+    accessible-checked <=> root.checked;
+    accessible-role: checkbox;
+    accessible-action-default => {
+        root.checked = !root.checked;
+        root.toggled();
+    }
+
+    forward-focus: i-focus-scope;
+
+    HorizontalLayout {
+        spacing: 10px;
+        visible: true;
+        interact := FHInteract {
+            hovered: i-touch-area.has-hover;
+            focused: i-focus-scope.has-focus;
+            enabled: root.enabled;
+            has-background: checked;
+            has-border: true;
+            has-corner: checked;
+            color: root.color;
+    
+            width: self.height;
+            height: FHSizeSettings.icon-size-small;
+            pressing <=> i-touch-area.pressed;
+        }
+    
+        txt := Text {
+            text: text;
+            vertical-alignment: center;
+            color: interact.foreground-outer;
+            font-size: FHFontSettings.body.font-size;
+            font-weight: FHFontSettings.body.font-weight;
+        }
+    }
+
+    i-touch-area := TouchArea {
+        clicked => {
+            if (root.enabled) {
+                root.checked = !root.checked;
+                root.toggled();
+            }
+        }
+    }
+
+    i-focus-scope := FocusScope {
+        x: 0;
+        width: 0;
+        enabled <=> root.enabled;
+
+        key-pressed(event) => {
+            if (event.text == " " || event.text == "\n") {
+                i-touch-area.clicked();
+                 return accept;
+            }
+
+            return reject;
+        }
+    }
+
+}

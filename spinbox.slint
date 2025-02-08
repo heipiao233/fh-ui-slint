@@ -1,0 +1,92 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
+
+import { SpinBoxBase } from "builtin:/common/spinbox-base.slint";
+import { FHPalette, FHFontSettings, DefaultPalette, FHSizeSettings, Icons } from "styling.slint";
+import { Button } from "std-widgets-impl.slint";
+
+export component SpinBox {
+    in property <int> minimum <=> base.minimum;
+    in property <int> maximum <=> base.maximum;
+    in property <bool> enabled <=> base.enabled;
+    in property <int> step-size <=> base.step-size;
+    in property <TextHorizontalAlignment> horizontal-alignment <=> base.horizontal-alignment;
+    out property <bool> has-focus: base.has-focus || add.has-focus || sub.has-focus;
+    in-out property <int> value <=> base.value;
+
+    callback edited <=> base.edited;
+    accessible-role: spinbox;
+    accessible-enabled: root.enabled;
+    accessible-value: root.value;
+    accessible-value-minimum: root.minimum;
+    accessible-value-maximum: root.maximum;
+    accessible-value-step: (root.maximum - root.minimum) / 100;
+    accessible-action-set-value(v) => { if v.is-float() { base.update-value(v.to-float()); } }
+    accessible-action-increment => { base.increment(); }
+    accessible-action-decrement => { base.decrement(); }
+
+    opacity: enabled ? 1 : 0.5;
+    forward-focus: base;
+    height: FHSizeSettings.component-height;
+
+    states [
+        focused when has-focus: {
+            underline.background: DefaultPalette.general;
+        }
+
+        unfocused when !has-focus: {
+            underline.background: FHPalette.border;
+        }
+    ]
+
+    Rectangle {
+        background: FHPalette.alternate-background;
+        layout := HorizontalLayout {
+            padding-left: 8px;
+            base := SpinBoxBase {
+                font-size: FHFontSettings.body.font-size;
+                font-weight: FHFontSettings.body.font-weight;
+                selection-background-color: FHPalette.selection-background;
+                selection-foreground-color: FHPalette.selection-foreground;
+                color: FHPalette.foreground;
+            }
+
+            Rectangle {
+                width: 8px;
+            }
+
+            add := Button {
+                visible: root.enabled;
+                icon: Icons.arrow-up;
+                width: base.height;
+                height: base.height;
+                color: FHPalette.safe;
+                primary: true;
+        
+                clicked => {
+                    base.increment();
+                }
+            }
+        
+            sub := Button {
+                visible: root.enabled;
+                icon: Icons.arrow-down;
+                width: base.height;
+                height: base.height;
+                color: FHPalette.danger;
+                primary: true;
+                // color: 
+        
+                clicked => {
+                    base.decrement();
+                }
+            }
+        }
+    }
+
+    underline := Rectangle {
+        y: base.height;
+        width: root.width;
+        height: 1px;
+    }
+}
