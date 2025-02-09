@@ -36,7 +36,7 @@ export component ComboBox {
             opacity: 0.35;
         }
 
-        open when has-focus: {
+        open when has-focus && root.enabled: {
             underline.background: FHPalette.general.dark;
             in {
                 animate underline.background { duration: 50ms; }

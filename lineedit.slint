@@ -32,7 +32,7 @@ export component LineEdit {
         edited(v);
     }
 
-    opacity: enabled ? 1 : 0.5;
+    opacity: enabled ? 1 : 0.35;
 
     public function set-selection-offsets(start: int, end: int) {
         base.set-selection-offsets(start, end);
@@ -59,11 +59,11 @@ export component LineEdit {
     }
 
     states [
-        focused when base.has-focus: {
+        focused when base.has-focus && enabled: {
             underline.background: DefaultPalette.general;
         }
 
-        unfocused when !base.has-focus: {
+        unfocused when !base.has-focus || !enabled: {
             underline.background: FHPalette.border;
         }
     ]

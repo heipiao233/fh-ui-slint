@@ -30,16 +30,16 @@ export component SpinBox {
     accessible-action-increment => { base.increment(); }
     accessible-action-decrement => { base.decrement(); }
 
-    opacity: enabled ? 1 : 0.5;
+    opacity: enabled ? 1 : 0.35;
     forward-focus: base;
     height: FHSizeSettings.component-height;
 
     states [
-        focused when has-focus: {
+        focused when has-focus && enabled: {
             underline.background: DefaultPalette.general;
         }
 
-        unfocused when !has-focus: {
+        unfocused when !has-focus || !enabled: {
             underline.background: FHPalette.border;
         }
     ]
