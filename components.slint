@@ -62,6 +62,12 @@ export component ListItem {
         y: 4px;
     }
 
+    if(has-focus): Rectangle {
+        border-color: FHPalette.border;
+        border-width: 2px;
+        border-radius: 2px;
+    }
+
     VerticalLayout {
         padding-left: 16px;
         padding-right: 16px;
