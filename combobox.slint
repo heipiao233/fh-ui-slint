@@ -94,16 +94,29 @@ export component ComboBox {
     }
 
     popup := PopupWindow {
-        y: root.height;
-        width: root.width + 12px;
-        height: root.visible-items * FHSizeSettings.component-height + 2 * root.popup-padding;
+        x: (parent.width - self.width) / 2 + 6px;
+        y: root.height - 16px;
+        width: root.width + 12px + 256px;
+        height: root.visible-items * FHSizeSettings.component-height + 2 * root.popup-padding + 32px;
         ScrollView {
-            VerticalLayout {
+            Rectangle {
+                x: popup-layout.x;
+                y: popup-layout.y;
+                width: root.width;
+                height: root.visible-items * FHSizeSettings.component-height * 1;
+                drop-shadow-color: rgba(128, 128, 128, 0.35);
+                drop-shadow-offset-y: 2px;
+                drop-shadow-blur: 16px;
+            }
+            popup-layout := VerticalLayout {
+                x: (parent.width - self.width - 12px) / 2;
+                y: 16px;
+                width: root.width;
                 for value[index] in root.model : Rectangle {
                     background: FHPalette.alternate-background;
                     states [
                         hovered when touch-area.has-hover: {
-                            transparent-layer.background: FHPalette.general.glass;
+                            transparent-layer.background: FHPalette.general.glass-bg;
                             in {
                                 animate transparent-layer.background {
                                     duration: 50ms;
@@ -156,8 +169,8 @@ export component ComboBox {
             }
         }
         Corner {
-            x: background.width - self.width - 4px;
-            y: 3px;
+            x: background.width - self.width - 4px + popup-layout.x;
+            y: popup-layout.y + 3px;
             fill: FHPalette.general.dark;
         }
 

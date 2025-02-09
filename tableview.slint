@@ -101,7 +101,7 @@ component TableViewRow inherits Rectangle {
 
     min-width: layout.min-width;
     min-height: max(24px, layout.min-height);
-    background: root.even ? FHPalette.general.glass : transparent;
+    background: root.even ? FHPalette.general.glass-bg : FHPalette.background;
 
     layout := HorizontalLayout {
        @children

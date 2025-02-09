@@ -39,7 +39,8 @@ export component Button {
         has-background: primary;
         has-border: true;
         color: root.color;
-        hovered: i-touch-area.has-hover || i-focus-scope.has-focus;
+        hovered: i-touch-area.has-hover;
+        focused: i-focus-scope.has-focus;
         enabled: root.enabled;
 
         pressing <=> pressed;
@@ -95,7 +96,7 @@ export component Button {
             colorize: colorize-icon ? interact.foreground : transparent;
         }
     
-        if root.text != "": Text {
+        Text {
             text: text;
             color: interact.foreground;
             font-size: FHFontSettings.body.font-size;

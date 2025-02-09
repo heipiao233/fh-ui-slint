@@ -24,13 +24,13 @@ export component FHInteract {
     property <brush> fg-outer;
     out property <brush> foreground: focused ? fg.brighter(0.05) : fg; // Final value with focused effect
     out property <brush> foreground-outer: focused ? fg-outer.brighter(0.05) : fg-outer; // Final value with focused effect
-    property <brush> bg-original: has-background ? color.dark : transparent;
-    property <brush> bg: has-background ? color.dark : transparent;
+    property <brush> bg-original: has-background ? color.dark : FHPalette.background;
+    property <brush> bg: has-background ? color.dark : FHPalette.background;
     property <brush> border-color;
     property <brush> border-color-final: focused ? border-color.brighter(0.05) : border-color;
     states [
         pressing when root.pressing: {
-            bg: has-background ? bg-original.darker(0.15) : color.glass.darker(0.15);
+            bg: has-background ? bg-original.darker(0.15) : color.glass-bg.darker(0.15);
             border-color: has-background ? bg-original.darker(0.15) : color.dark.darker(0.15);
             fg-outer: FHPalette.foreground.darker(0.15);
             fg: has-background ? Colors.white.darker(0.15) : color.dark.darker(0.15);
@@ -40,7 +40,7 @@ export component FHInteract {
         }
 
         hovered when root.hovered: {
-            bg: has-background ? bg-original.brighter(0.15) : color.glass;
+            bg: has-background ? bg-original.brighter(0.15) : color.glass-bg;
             border-color: color.dark.brighter(0.15);
             fg-outer: FHPalette.foreground.brighter(0.15);
             fg: has-background ? Colors.white.darker(0.15) : color.dark.brighter(0.15);
@@ -67,7 +67,9 @@ export component FHInteract {
         width: root.width;
         border-width: has-border ? 1px : 0px;
         border-color: border-color-final;
-        background: focused ? bg.brighter(0.05) : bg;
+        background: bg;
+        drop-shadow-blur: focused ? 5px : 0;
+        drop-shadow-color: color.dark;
     }
 
     if (has-corner): Corner {

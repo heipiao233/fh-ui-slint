@@ -26,33 +26,43 @@ export struct FHColor {
     default: color,
     dark: color,
     glass: color,
+    glass-bg: color
 }
 
 export global FHPalette {
+    public pure function blend-bg(c: color) -> color {
+        return FHPalette.background.mix(c.with-alpha(1), 0.88);
+    }
+
     out property <FHColor> general: {
         default: DefaultPalette.general,
         dark: DarkPalette.general,
-        glass: GlassPalette.general
+        glass: GlassPalette.general,
+        glass-bg: blend-bg(GlassPalette.general)
     };
     out property <FHColor> safe: {
         default: DefaultPalette.safe,
         dark: DarkPalette.safe,
-        glass: GlassPalette.safe
+        glass: GlassPalette.safe,
+        glass-bg: blend-bg(GlassPalette.safe)
     };
     out property <FHColor> warn: {
         default: DefaultPalette.warn,
         dark: DarkPalette.warn,
-        glass: GlassPalette.warn
+        glass: GlassPalette.warn,
+        glass-bg: blend-bg(GlassPalette.warn)
     };
     out property <FHColor> danger: {
         default: DefaultPalette.danger,
         dark: DarkPalette.danger,
-        glass: GlassPalette.danger
+        glass: GlassPalette.danger,
+        glass-bg: blend-bg(GlassPalette.danger)
     };
     out property <FHColor> special: {
         default: DefaultPalette.special,
         dark: DarkPalette.special,
-        glass: GlassPalette.special
+        glass: GlassPalette.special,
+        glass-bg: blend-bg(GlassPalette.special)
     };
 
 
