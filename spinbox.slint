@@ -33,6 +33,8 @@ export component SpinBox {
     opacity: enabled ? 1 : 0.35;
     forward-focus: base;
     height: FHSizeSettings.component-height;
+    horizontal-stretch: 1;
+    vertical-stretch: 0;
 
     states [
         focused when has-focus && enabled: {
