@@ -68,7 +68,7 @@ export component FHInteract {
         border-width: has-border ? 1px : 0px;
         border-color: border-color-final;
         background: bg;
-        drop-shadow-blur: focused ? 5px : 0;
+        drop-shadow-blur: focused && (has-border||has-background) ? 5px : 0;
         drop-shadow-color: color.dark;
     }
 

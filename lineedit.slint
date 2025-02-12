@@ -35,6 +35,9 @@ export component LineEdit {
     opacity: enabled ? 1 : 0.35;
     vertical-stretch: 0;
     horizontal-stretch: 1;
+    min-width: max(layout.min-width, 160px);
+    min-height: max(32px, layout.min-height);
+    forward-focus: base;
 
     public function set-selection-offsets(start: int, end: int) {
         base.set-selection-offsets(start, end);

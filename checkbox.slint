@@ -22,7 +22,7 @@ export component CheckBox {
     accessible-label: root.text;
     accessible-checked <=> root.checked;
     accessible-role: checkbox;
-    height: interact.height;
+    min-height: max(16px, layout.min-height);
     accessible-action-default => {
         root.checked = !root.checked;
         root.toggled();
@@ -30,10 +30,11 @@ export component CheckBox {
 
     forward-focus: i-focus-scope;
 
-    HorizontalLayout {
+    layout := HorizontalLayout {
         spacing: 10px;
         visible: true;
         interact := FHInteract {
+            y: (parent.height - self.height) / 2;
             hovered: i-touch-area.has-hover;
             focused: i-focus-scope.has-focus;
             enabled: root.enabled;
@@ -50,6 +51,7 @@ export component CheckBox {
         txt := Text {
             text: text;
             vertical-alignment: center;
+            horizontal-alignment: left;
             color: interact.foreground-outer;
             font-size: FHFontSettings.body.font-size;
             font-weight: FHFontSettings.body.font-weight;

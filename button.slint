@@ -96,12 +96,13 @@ export component Button {
             colorize: colorize-icon ? interact.foreground : transparent;
         }
     
-        Text {
+        if (text != "") : Text {
             text: text;
             color: interact.foreground;
             font-size: FHFontSettings.body.font-size;
             font-weight: FHFontSettings.body.font-weight;
             vertical-alignment: center;
+            opacity: enabled ? 1 : 0.35;
         }
     }
 

@@ -20,7 +20,6 @@ export component GroupBox {
         spacing: 8px;
         padding-top: 16px;
         padding-bottom: 8px;
-        alignment: start;
 
         label := Text {
             vertical-stretch: 0;
@@ -34,9 +33,13 @@ export component GroupBox {
             height: 1px;
         }
 
-        GridLayout {
-            padding: 8px;
-            @children
+        Rectangle {
+            GridLayout {
+                visible: true;
+                padding: 8px;
+                @children
+            }
+            vertical-stretch: 1;
         }
     }
 }

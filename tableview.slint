@@ -40,6 +40,26 @@ component TableViewColumn inherits Rectangle {
         has-background: true;
         has-border: false;
         enabled: true;
+        layout := HorizontalLayout {
+            padding-left: 8px;
+            padding-right: 8px;
+            spacing: 2px;
+    
+            HorizontalLayout {
+                @children
+            }
+    
+            icon := Image {
+                image-fit: contain;
+                colorize: foreground;
+                visible: root.sort-order != SortOrder.unsorted;
+                width: 12px;
+                y: (parent.height - self.height) / 2;
+                source: root.sort-order == SortOrder.ascending ? Icons.up : Icons.down;
+    
+                animate colorize { duration: 150ms; }
+            }
+        }
     }
 
     Rectangle {
@@ -56,27 +76,6 @@ component TableViewColumn inherits Rectangle {
                     adjust_size(self.mouse-x - self.pressed-x);
                 }
             }
-        }
-    }
-
-    layout := HorizontalLayout {
-        padding-left: 8px;
-        padding-right: 8px;
-        spacing: 2px;
-
-        HorizontalLayout {
-            @children
-        }
-
-        icon := Image {
-            image-fit: contain;
-            colorize: FHPalette.foreground;
-            visible: root.sort-order != SortOrder.unsorted;
-            width: 12px;
-            y: (parent.height - self.height) / 2;
-            source: root.sort-order == SortOrder.ascending ? Icons.up : Icons.down;
-
-            animate colorize { duration: 150ms; }
         }
     }
 }
@@ -103,18 +102,19 @@ component TableViewRow inherits Rectangle {
     min-height: max(24px, layout.min-height);
     background: root.even ? FHPalette.general.glass-bg : FHPalette.background;
 
-    layout := HorizontalLayout {
-       @children
-    }
-
-    FHInteract {
+    interact := FHInteract {
         height: parent.height;
         width: parent.width;
         pressing: touch-area.pressed;
         hovered: touch-area.has-hover;
-        has-background: false;
+        focused: root.selected;
+        has-background: root.selected;
         has-corner: false;
         has-border: false;
+
+        layout := HorizontalLayout {
+           @children
+        }
     }
 
     touch-area := TouchArea {
@@ -257,12 +257,6 @@ export component StandardTableView {
                             font-weight: FHFontSettings.body.font-weight;
                             font-size: FHFontSettings.body.font-size;
                             color: mod(idx, 2) == 0 ? FHPalette.foreground.darker(0.15) : FHPalette.foreground;
-
-                            states [
-                                selected when idx == root.current-row : {
-                                    cell-text.color: FHPalette.general.dark;
-                                }
-                            ]
                         }
                     }
                 }
