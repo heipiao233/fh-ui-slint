@@ -174,4 +174,22 @@ export component TabBarImpl inherits TabBarBase {
     }
 }
 
+export component TabBarHorizontalImpl inherits TabBarBase {
+    accessible-orientation: Orientation.horizontal;
+    Flickable {
+        HorizontalLayout {
+            @children
+        }
+    }
+}
+
+export component TabBarVerticalImpl inherits TabBarBase {
+    accessible-orientation: Orientation.vertical;
+    Flickable {
+        VerticalLayout {
+            @children
+        }
+    }
+}
+
 export component TabWidget inherits TabWidget { }

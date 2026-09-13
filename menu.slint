@@ -1,0 +1,69 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
+
+import { FHPalette, FHFontSettings } from "styling.slint";
+import { MenuBarItemBase, MenuBarBase, MenuFrameBase, MenuItemBase } from "builtin:/common/menu-base.slint";
+
+export component MenuBarItem {
+    in property <MenuEntry> entry <=> base.entry;
+
+    callback clicked <=> base.clicked;
+    callback hovered <=> base.hovered;
+
+    min-width: base.min-width;
+    min-height: base.min-height;
+
+    base := MenuBarItemBase {
+        horizontal-padding: 12px;
+        top-padding: 4px;
+        bottom-padding: 4px;
+        default-foreground: FHPalette.accent-background;
+        hover-foreground: FHPalette.accent-background;
+        pressed-foreground: FHPalette.accent-background;
+        hover-background: FHPalette.accent-background;
+        pressed-background: FHPalette.background;
+        border-radius: 12px;
+    }
+}
+
+export component MenuBar inherits MenuBarBase {
+    spacing: 4px;
+    min-layout-height: 48px;
+}
+
+export component MenuFrame inherits MenuFrameBase {
+    background: FHPalette.alternate-background;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: FHPalette.border;
+    drop-shadow-color: FHPalette.alternate-foreground;
+    drop-shadow-offset-y: 4px;
+    drop-shadow-blur: 16px;
+    layout-min-width: 360px;
+}
+
+export component MenuItem {
+    in property <bool> is-current <=> base.is-current;
+    in property <MenuEntry> entry <=> base.entry;
+
+    callback set-current <=> base.set-current;
+    callback clear-current <=> base.clear-current;
+    callback activate <=> base.activate;
+
+    min-height: entry.is-separator ? 1px : max(40px, base.min-height);
+    max-height: entry.is-separator ? 1px : base.max-height;
+
+    HorizontalLayout {
+        base := MenuItemBase {
+            default-foreground: FHPalette.foreground;
+            alternate-foreground: FHPalette.alternate-foreground;
+            current-foreground: FHPalette.foreground;
+            current-background: FHPalette.background;
+            separator-color: FHPalette.border;
+            horizontal-padding: 16px;
+            spacing: 8px;
+            sub-menu-icon: @image-url("_arrow_forward.svg");
+            icon-size: 16px;
+        }
+    }
+}
